@@ -1,0 +1,26 @@
+version: '2'
+services:
+  update-shipping:
+    image: node
+    volumes:
+      - /opt/www:/opt/www
+    ports:
+      - 6000:80
+    environment:
+      - SERVER_HOST=localhost
+      - SERVER_PORT=80
+      - SERVER_SSL_PORT=443
+      - BACKEND_HOST=10.88.30.35
+      - BACKEND_PORT=8080
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apt update && apt install git cron nginx gettext -y && npm install -g cnpm --registry=https://registry.npm.taobao.org && cd /opt && git clone http://temp:88888888@10.88.30.35:2000/snowfox/aux-shipping-web.git
+        echo '!#/bin/bash'>/opt/update.sh
+        echo 'cd /opt/aux-shipping-web && git pull && cnpm install && npm run build:prod && rm -rf /usr/share/nginx/html/* && cp -r dist/* /usr/share/nginx/html'>/opt/update.sh
+        service cron start
+        cd /opt && chmod 744 update.sh && ./update.sh
+        echo '0 0/15 7-23 * *   root    cd /opt && ./update.sh'>/etc/crontab
+        cp /opt/aux-shipping-web/nginx.conf /etc/nginx/app.template
+        envsubst '$SERVER_HOST $SERVER_PORT $SERVER_SSL_PORT $BACKEND_HOST $BACKEND_PORT' < /etc/nginx/app.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'

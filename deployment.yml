@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping-web
+  namespace: sie-aux
+spec:
+  type: NodePort
+  ports:
+    - name: "shipping-web-service"
+      port: 30001
+      targetPort: 80
+      nodePort: 30001
+  selector:
+    app: shipping-web
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shipping-web
+  namespace: sie-aux
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shipping-web
+    spec:
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/snowfox/aux-shipping-web:latest
+          name: shipping-web

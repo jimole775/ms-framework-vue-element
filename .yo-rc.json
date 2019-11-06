@@ -1,0 +1,18 @@
+{
+  "searchEngine": "elasticsearch",
+  "generator-jhipster": {
+    "jhipsterVersion": "5.7.1",
+    "applicationType": "monolith",
+    "baseName": "jhipster",
+    "cacheProvider": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [],
+    "enableTranslation": false
+  }
+}

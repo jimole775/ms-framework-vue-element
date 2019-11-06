@@ -1,0 +1,34 @@
+image: node:10
+
+before_script:
+  - npm install
+
+stages:
+  - dist
+  - release
+
+build-js:
+  stage: dist
+  script:
+    - pwd
+    - npm run build:prod
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+
+
+build-docker:
+  image: docker:latest
+  services:
+    - docker:dind
+  dependencies:
+    - build-js
+  stage: release
+  before_script:
+    - docker info
+  script:
+    - echo $docker_username
+    - docker login -u "${docker_username}" -p "${docker_password}" registry.cn-shenzhen.aliyuncs.com
+    - docker build -f Dockerfile -t registry.cn-shenzhen.aliyuncs.com/snowfox/aux-shipping-web:latest .
+    - docker push registry.cn-shenzhen.aliyuncs.com/snowfox/aux-shipping-web:latest

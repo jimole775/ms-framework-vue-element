@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>vue管理系统框架</title>
+    <script>
+      // 这里检测外部访问，是为了提高首页的跳转速度
+      sniffExternalAccess()
+      function sniffExternalAccess() {
+        // fullPath: "/?from=singlemessage&isappinstalled=0#/DZ-manage/submit-amend/order-notice/edit/73&b=170306119/"
+        // hash: "#/DZ-manage/submit-amend/order-notice/edit/73&b=170306119/"
+        // 如果有 url 包含 &b= ，就是OA跳转页
+        if (/[\&|\?]+b\=/.test(location.href)) {
+          gotToken(function(token) {
+            if (token) {
+              try {
+                localStorage.clear()
+                var compatible = compatibleURI()              
+                var spillSign = /\?/.test(compatible.hash) ? '&' : '?'
+                if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+                  window.open('https://mobile.rongxis.com/' + compatible.hash + spillSign + 'token=' + token, '_self')              
+                } else {
+                  window.open(compatible.origin + '/' + compatible.hash + spillSign + 'token=' + token, '_self')
+                }                     
+              } catch (error) {
+                console.log('跳转异常', error)    
+              }         
+            } else {
+              console.log('获取登陆信息，无法进行跳转，请联系管理员')
+            }
+          })
+        }
+      }
+
+      function gotToken(callback) {
+        try {
+          // fullPath: "/?from=singlemessage&isappinstalled=0#/DZ-manage/submit-amend/order-notice/edit/73&b=170306119/"
+          // hash: "#/DZ-manage/submit-amend/order-notice/edit/73&b=170306119/"
+          var xhr = new window.XMLHttpRequest()
+          var matchSign = location.hash.match(/[\&|\?]+b\=/)[0]
+          xhr.open('POST', location.origin + '/superback/api/1.0.0/auxUser/getTokenByUserCode', true)
+          xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+              callback && callback(JSON.parse(xhr.responseText).data)
+            }
+          }
+
+          xhr.send(JSON.stringify({
+              params: {
+                userCode: location.hash.split(matchSign)[1].replace(/\//g,'')
+              }
+          }))          
+        } catch (error) {
+          console.log('跳转异常', error)          
+        }
+      }
+
+      function compatibleURI() {
+        try {          
+          var search = location.search
+          var hash = location.hash
+          var origin = location.origin
+          var matchSign = location.hash.match(/[\&|\?]+b\=/)[0]
+          // fullPath: "/?from=singlemessage&isappinstalled=0#/DZ-manage/submit-amend/order-notice/edit/73&b=170306119/"
+          // 重新调整 hash 值
+          hash = hash.split(matchSign)[0]
+          return {
+            search: search,
+            hash: hash,
+            origin: origin
+          }
+        } catch (error) {
+          console.log('跳转异常', error)    
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <script src=<%= BASE_URL %>/tinymce4.7.5/tinymce.min.js></script>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>

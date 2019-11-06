@@ -1,0 +1,28 @@
+const getters = {
+  langKey: state => state.user.langKey,
+  authorities: state => state.user.authorities,
+  login: state => state.user.login,
+  imageUrl: state => state.user.imageUrl,
+  sidebar: state => state.app.sidebar,
+  language: state => state.app.language,
+  size: state => state.app.size,
+  device: state => state.app.device,
+  roles: state => state.user.roles,
+  width: state => state.app.width,
+  entid: state => state.app.entid,
+  userCode: state => state.user.userCode,
+  userType: state => state.user.userType,
+  visitedViews: state => state.tagsView.visitedViews,
+  cachedViews: state => state.tagsView.cachedViews,
+  permission_routers: state => state.permission.routers,
+  meunRouters: state => state.permission.meunRouters,
+  addRouters: state => state.permission.addRouters,
+  errorLogs: state => state.errorLog.logs
+  // token: state => state.user.token,
+  // avatar: state => state.user.avatar,
+  // name: state => state.user.name,
+  // introduction: state => state.user.introduction,
+  // status: state => state.user.status,
+  // setting: state => state.user.setting,
+}
+export default getters
