@@ -19,6 +19,7 @@ selenium-debug.log
 *.sln
 
 package-lock.json
+yarn-lock
 .svn/
 /.settings/*
 /.project
